@@ -34,7 +34,7 @@ add = 8
 multiply = 9
 and = 10
 or = 11
-igo = 12
+ifgo = 12
 sleep = 13
 */
 
@@ -83,7 +83,8 @@ void execute_instruction()
             break;
         case 12:
             if (cpu.AC != 0) {
-                cpu.PC = cpu.IR1 - 1; // Jump to the address specified in IR1, -1 because PC will be incremented
+                // Jump to the address specified in IR1 (-1 because PC will be incremented)
+                cpu.PC = cpu.IR1 - 1; 
             }
             break;
         case 13:
