@@ -9,7 +9,7 @@ typedef struct {
     int AC;
     int MAR;
     int MBR;
-} CPU_reg;
+} CPU_reg;  
 
 extern CPU_reg cpu;
 

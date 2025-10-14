@@ -6,8 +6,11 @@
 
 // Define the global data structure
 Data data;
-
 int argExists = 0;
+
+void load_programs(char[] fname) {
+    
+}
 
 void load_prog(FILE *fname, int addr)
 {
