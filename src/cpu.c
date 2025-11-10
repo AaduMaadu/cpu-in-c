@@ -1,11 +1,20 @@
 #include <stdio.h>
 #include "cpu.h"
 #include "memory.h"
+#include "scheduler.h"
 
-// Define the CPU register structure
-CPU_reg cpu;
+// Define the CPU register (global definition matching `extern` in cpu.h)
+CPU_reg_t cpu = {0};
 
 __uint8_t EXIT_FLAG = 0;
+
+CPU_reg_t context_switch(CPU_reg_t new_vals) 
+{
+    CPU_reg_t cpu_old = cpu;
+    cpu = new_vals;
+
+    return cpu_old;
+}
 
 void fetch_instruction(int addr)
 {
@@ -76,10 +85,10 @@ void execute_instruction()
             cpu.AC = cpu.AC * cpu.MBR;
             break;
         case 10:
-            cpu.AC = cpu.AC & cpu.MBR;
+            cpu.AC = cpu.AC && cpu.MBR; // Logical AND
             break;
         case 11:
-            cpu.AC = cpu.AC | cpu.MBR;
+            cpu.AC = cpu.AC || cpu.MBR; // Logical OR
             break;
         case 12:
             if (cpu.AC != 0) {

@@ -3,26 +3,79 @@
 #include <string.h>
 #include "memory.h"
 #include "disk.h"
+#include "scheduler.h"
 
 // Define the global data structure
 Data data;
 int argExists = 0;
 
-void load_programs(char[] fname) {
-    
-}
-
-void load_prog(FILE *fname, int addr)
+void load_programs(char fname[])
 {
     char buffer[256];
+    char memPos_str[16], filename[32];
+    
+    memset(memPos_str, 0, sizeof(memPos_str));
+    memset(filename, 0, sizeof(filename));
 
-    while (fgets(buffer, sizeof(buffer), fname) != NULL) 
+    FILE* file = fopen(fname, "r");
+    if (file == NULL) 
+    {
+        printf("Cannot open file '%s'\n", fname);
+        exit(1);
+    }
+    printf("Successfully opened file %s\n", fname);
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) 
+    {
+        //int p_count = 0;
+        char *ptr = buffer;
+
+        // Extract memory position of program
+        int i = 0;
+        while (*ptr != ' ') 
+        {
+            memPos_str[i++] = *ptr++;
+        }
+        int memPos = atoi(memPos_str);
+
+        ptr++; // skip space
+        // Extract program file name
+        i = 0;
+        while (*ptr != '\n' && *ptr != '\0' && i < 31)
+        {
+            filename[i++] = *ptr++;
+        }
+        filename[i] = '\0';
+
+        load_prog(filename, memPos);
+    }
+    fclose(file);
+}
+
+void load_prog(char fname[], int addr)
+{
+    int base = addr;
+    char buffer[256];
+
+    FILE* file = fopen(fname, "r");
+    if (file == NULL) 
+    {
+        printf("Cannot open file '%s'\n", fname);
+        exit(1);
+    }
+    printf("Successfully opened file %s\n", fname);
+
+    int size = 0;
+    while (fgets(buffer, sizeof(buffer), file) != NULL) 
     {
         if (buffer[0] == '/')
             continue;
 
         mem_write(addr++, translate(buffer));
+        size++;
     }
+    new_process(base, size);
+    fclose(file);
 }
 
 Data* translate(char *instruction)

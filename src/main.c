@@ -2,29 +2,24 @@
 #include "cpu.h"
 #include "disk.h"
 #include "memory.h"
+#include "scheduler.h"
 
-FILE* file;
-char filename[64] = "program_if.txt";
-char buffer[256];
+char filename[32] = "program_list.txt";
 
 int main()
 {   
-    file = fopen(filename, "r");
+    int cycle_count = 0;
 
-    if (file == NULL) {
-        printf("Cannot open file '%s'\n", filename);
-        return 1;
-    }
-    printf("Successfully opened file %s\n", filename);
-
-    cpu.base = 4;
-    cpu.PC = 0;
-
-    load_prog(file, cpu.base);
+    //load_prog(file, cpu.base);
+    load_programs(filename);
 
     // Loop till program exits
-    while (clock_cycle())
-    ; 
+    // while ready_queue is not empty, keep looping
+    while(head != NULL)
+    {
+        int p_status = clock_cycle();
+        schedule(cycle_count++, p_status);
+    } 
 
     // Print first 20 memory locations
     for (int i = 0; i < 20; i++) {
@@ -32,6 +27,5 @@ int main()
         printf("Memory location %d : [%d, %d]\n", i, memory_data[0], memory_data[1]);
     }
 
-    fclose(file);
     return 0;
 }

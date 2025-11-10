@@ -9,10 +9,12 @@ typedef struct {
     int AC;
     int MAR;
     int MBR;
-} CPU_reg;  
+} CPU_reg_t;
 
-extern CPU_reg cpu;
+extern CPU_reg_t cpu;
+extern int cycle_count;
 
+CPU_reg_t context_switch(CPU_reg_t);
 void fetch_instruction(int);
 void execute_instruction();
 int clock_cycle();

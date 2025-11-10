@@ -1,63 +1,88 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "scheduler.h"
+#include "cpu.h"
 
 #define PROCESS_TABLE_SIZE 1024
 
-int time_quantum = 10;
-int process_table[PROCESS_TABLE_SIZE];
+const int TIME_QUANTUM = 10; // default to 10 clock cycles
+PCB_t process_table[PROCESS_TABLE_SIZE];
+int pt_index = 0;
 Node* head = NULL;
 
 int schedule(int cycle_num, int process_status) 
 {
+    // Time quantum expiration check
+    if (cycle_num % TIME_QUANTUM == 0)
+    {
+        // Process has terminated -> remove from ready queue
+        if (process_status == 0) {
+            deleteHead();
+        }
+        // ready queue is empty
+        if (head == NULL) return 0; 
 
+        next_process();
+        PCB_t PCB_cur = process_table[pt_index];
+        context_switch(PCB_cur.cpu);
+    }
+    return 1;
 }
 
+// Move head node to back of the queue
 void next_process() 
 {
-
+    appendNode(head->data);
+    deleteHead();
 }
 
 void new_process(int base, int size) 
 {
+    PCB_t pcb_new;
+    pcb_new.p_Id = pt_index;
+    pcb_new.p_size = size;
+    pcb_new.cpu = (CPU_reg_t){0}; // Use a compound literal to zero-initialize the CPU_reg_t
+    pcb_new.cpu.base = base;
+    process_table[pt_index] = pcb_new;
+    pt_index++;
 
+    /* Add process to the end of ready queue */
+    appendNode(pcb_new);
 }
 
 // Given a reference (pointer to pointer) to 
 // the head of a list and an int, appends a 
 // new node at the end  
-void appendNode(Node** head_ref, PCB new_data)
+void appendNode(PCB_t new_data)
 {
-    // 1. Allocate node 
-    Node* new_node = (Node*) malloc(sizeof(Node));
+    // 1. Allocate node
+    Node* new_node = malloc(sizeof(Node));
+    if (!new_node) {
+        perror("malloc");
+        return;
+    }
 
-    // Used in step 5
-    Node *last = *head_ref;  
- 
-    // 2. Put in the data  
+    // 2. Fill data and mark next NULL
     new_node->data = new_data;
-
-    // 3. This new node is going to be the last node, so make next of it as NULL
     new_node->next = NULL;
 
-    // 4. If the Linked List is empty, then make the new node as head 
-    if (*head_ref == NULL)
-    {
-       *head_ref = new_node;
-       return;
-    }  
-     
-    // 5. Else traverse till the last node 
+    // 3. If list is empty, new node becomes head
+    if (head == NULL) {
+        head = new_node;
+        return;
+    }
+
+    // 4. Otherwise find last and append
+    Node *last = head;
     while (last->next != NULL)
         last = last->next;
- 
-    // 6. Change the next of last node 
-    last->next = new_node;  
+    last->next = new_node;
 }
 
-void deleteHead(Node** head_ref)
+void deleteHead()
 {
-    Node *temp = *head_ref;
-    *head_ref = temp->next; // Changed head
-     free(temp);
-
+    if (head == NULL) return;
+    Node *temp = head;
+    head = head->next; // Changed head
+    free(temp);
 }

@@ -4,10 +4,10 @@
 //
 load_const 18
 move_to_mar
-load_const 25
+load_const 2
 move_to_mbr
-load_const 5
-add
+load_const 9
+and
 move_to_mbr
 write_at_addr
 exit

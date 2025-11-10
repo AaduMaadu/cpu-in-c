@@ -1,6 +1,6 @@
 # ====== Configuration ======
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -MMD -MP
+CFLAGS = -Wall -Iinclude -MMD -MP
 
 SRC_DIR = src
 BUILD_DIR = build
