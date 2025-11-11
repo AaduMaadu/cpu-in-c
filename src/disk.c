@@ -14,6 +14,7 @@ void load_programs(char fname[])
     char buffer[64];
     char memPos_str[16], filename[64];
     
+    // Initialize arrays
     memset(memPos_str, 0, sizeof(memPos_str));
     memset(filename, 0, sizeof(filename));
 
@@ -27,7 +28,6 @@ void load_programs(char fname[])
 
     while (fgets(buffer, sizeof(buffer), file) != NULL) 
     {
-        //int p_count = 0;
         char *ptr = buffer;
 
         // Extract memory position of program
@@ -38,8 +38,8 @@ void load_programs(char fname[])
         }
         int memPos = atoi(memPos_str);
 
-        ptr++; // skip space
         // Extract program file name
+        ptr++; // skip space
         i = 0;
         while (*ptr != '\n' && *ptr != '\0' && i < 31)
         {
@@ -97,7 +97,8 @@ Data* translate(char *instruction)
     opcode[i] = '\0';
 
     //If space is found, then arg exists
-    if (*ptr == ' ') {
+    if (*ptr == ' ') 
+    {
         ptr++; //skip space
         i = 0;
         while (*ptr != '\0' && *ptr != '\n' && i < 31) 
@@ -108,7 +109,8 @@ Data* translate(char *instruction)
 
         data.arg = atoi(arg);
         argExists = 1;
-    } else {
+    } else 
+    {
         argExists = 0;
         data.arg = 0;
     }

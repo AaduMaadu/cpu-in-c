@@ -34,8 +34,9 @@ int schedule(int cycle_num, int process_status)
         // Go to the end of the linked list
         Node *last_ptr = head;
         while (last_ptr->next != NULL) 
+        {
             last_ptr = last_ptr->next;
-
+        }
         // store outgoing CPU regs into the moved node
         last_ptr->data.cpu = cpu_old;
 
@@ -57,8 +58,9 @@ void next_process()
     // append old head to tail
     Node *last_ptr = head;
     while (last_ptr->next != NULL) 
+    {
         last_ptr = last_ptr->next;
-
+    }
     last_ptr->next = old;
 }
 
@@ -81,35 +83,38 @@ void new_process(int base, int size)
 // new node at the end  
 void appendNode(PCB_t new_data)
 {
-    // 1. Allocate node
+    // Allocate node
     Node *new_node = malloc(sizeof(Node));
-    if (!new_node) {
+    if (!new_node) 
+    {
         perror("malloc");
         return;
     }
 
-    // 2. Fill data and mark next NULL
+    // Fill data and mark next NULL
     new_node->data = new_data;
     new_node->next = NULL;
 
-    // 3. If list is empty, new node becomes head
-    if (head == NULL) {
+    // If list is empty, new node becomes head
+    if (head == NULL) 
+    {
         head = new_node;
         return;
     }
 
-    // 4. Otherwise find last and append
-    Node *last = head;
-    while (last->next != NULL)
-        last = last->next;
-
-    last->next = new_node;
+    // Otherwise append new node to tail
+    Node *last_ptr = head;
+    while (last_ptr->next != NULL) 
+    {
+        last_ptr = last_ptr->next;
+    }
+    last_ptr->next = new_node;
 }
 
 void deleteHead()
 {
     if (head == NULL) return;
-    Node *temp = head;
+    Node *temp_ptr = head;
     head = head->next; // Changed head
-    free(temp);
+    free(temp_ptr);
 }

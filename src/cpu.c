@@ -5,7 +5,6 @@
 
 // Define the CPU register
 CPU_reg_t cpu = {0};
-
 __uint8_t EXIT_FLAG = 0;
 
 // Swap old cpu register values with new cpu register values
