@@ -11,8 +11,8 @@ int argExists = 0;
 
 void load_programs(char fname[])
 {
-    char buffer[256];
-    char memPos_str[16], filename[32];
+    char buffer[64];
+    char memPos_str[16], filename[64];
     
     memset(memPos_str, 0, sizeof(memPos_str));
     memset(filename, 0, sizeof(filename));
@@ -55,7 +55,8 @@ void load_programs(char fname[])
 void load_prog(char fname[], int addr)
 {
     int base = addr;
-    char buffer[256];
+    char buffer[64];
+    int size = 0;
 
     FILE* file = fopen(fname, "r");
     if (file == NULL) 
@@ -65,9 +66,9 @@ void load_prog(char fname[], int addr)
     }
     printf("Successfully opened file %s\n", fname);
 
-    int size = 0;
     while (fgets(buffer, sizeof(buffer), file) != NULL) 
     {
+        // Skip comments
         if (buffer[0] == '/')
             continue;
 
@@ -81,7 +82,7 @@ void load_prog(char fname[], int addr)
 Data* translate(char *instruction)
 {
     char *ptr = instruction;
-    char opcode[32], arg[32];
+    char opcode[32], arg[16];
     
     // Initialize arrays
     memset(opcode, 0, sizeof(opcode));
@@ -112,7 +113,7 @@ Data* translate(char *instruction)
         data.arg = 0;
     }
 
-    printf("Parsing: opcode='%s', arg='%s'\n", opcode, arg);
+    //printf("Parsing: opcode='%s', arg='%s'\n", opcode, arg);
 
     if (strcmp(opcode, "exit") == 0) {
         data.opcode = 0;

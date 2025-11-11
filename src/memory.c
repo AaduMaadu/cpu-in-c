@@ -12,7 +12,7 @@ int* mem_read(int addr)
 
 void mem_write(int addr, Data *data_ptr)
 {
-    printf("Writing to mem addr: %d\n", addr);
+    //printf("Writing to mem addr: %d\n", addr);
     memory[addr][0] = data_ptr->opcode;
 
     if (argExists) {

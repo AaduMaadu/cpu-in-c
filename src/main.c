@@ -4,17 +4,20 @@
 #include "memory.h"
 #include "scheduler.h"
 
-char filename[32] = "program_list.txt";
+char filename[64] = "program_list.txt";
 
 int main()
 {   
-    int cycle_count = 0;
+    int cycle_count = 1;
 
-    //load_prog(file, cpu.base);
     load_programs(filename);
 
-    // Loop till program exits
-    // while ready_queue is not empty, keep looping
+    // Load the first process into CPU before starting clock cycles
+    cpu = head->data.cpu;
+    printf("Initial process loaded: %d (base=%d)\n", head->data.p_Id, cpu.base);
+
+    /* Loop till program exits 
+    ** While ready_queue is not empty, keep looping */ 
     while(head != NULL)
     {
         int p_status = clock_cycle();

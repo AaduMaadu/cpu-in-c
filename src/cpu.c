@@ -3,11 +3,12 @@
 #include "memory.h"
 #include "scheduler.h"
 
-// Define the CPU register (global definition matching `extern` in cpu.h)
+// Define the CPU register
 CPU_reg_t cpu = {0};
 
 __uint8_t EXIT_FLAG = 0;
 
+// Swap old cpu register values with new cpu register values
 CPU_reg_t context_switch(CPU_reg_t new_vals) 
 {
     CPU_reg_t cpu_old = cpu;
@@ -49,7 +50,7 @@ sleep = 13
 
 void execute_instruction()
 {
-    printf("Executing opcode: %d\n", cpu.IR0);
+    //printf("Executing opcode: %d\n", cpu.IR0);
     switch(cpu.IR0) {
         case 0:
             EXIT_FLAG = 1;
@@ -102,9 +103,9 @@ void execute_instruction()
         default:
             printf("ERROR: Invalid Opcode Found!\n");
     }
-    printf("AC Register contents: %d\n", cpu.AC);
-    printf("MBR contents: %d\n", cpu.MBR);
-    printf("MAR contents: %d\n", cpu.MAR);
+    //printf("AC Register contents: %d\n", cpu.AC);
+    //printf("MBR contents: %d\n", cpu.MBR);
+    //printf("MAR contents: %d\n", cpu.MAR);
 }
 
 int mem_address(int I_addr)

@@ -10,30 +10,56 @@ PCB_t process_table[PROCESS_TABLE_SIZE];
 int pt_index = 0;
 Node* head = NULL;
 
-int schedule(int cycle_num, int process_status) 
+int schedule(int cycle_num, int process_status)
 {
-    // Time quantum expiration check
-    if (cycle_num % TIME_QUANTUM == 0)
-    {
-        // Process has terminated -> remove from ready queue
-        if (process_status == 0) {
-            deleteHead();
-        }
-        // ready queue is empty
-        if (head == NULL) return 0; 
+    // ready queue is empty, nothing to schedule
+    if (head == NULL) return 0;
 
-        next_process();
-        PCB_t PCB_cur = process_table[pt_index];
-        context_switch(PCB_cur.cpu);
+    // If the running process exited, remove it and load the next process
+    if (process_status == 0) 
+    {
+        deleteHead();
+        // Terminate if ready queue empty
+        if (head == NULL) return 0;
+
+        context_switch(head->data.cpu);
+        printf("Loaded process ID: %d\n", head->data.p_Id);
     }
+    // Switch when quantum expires (except when there is only 1 process in the queue)
+    else if (!(cycle_num % TIME_QUANTUM) && head->next != NULL) 
+    {
+        next_process();
+        CPU_reg_t cpu_old = context_switch(head->data.cpu); 
+
+        // Go to the end of the linked list
+        Node *last_ptr = head;
+        while (last_ptr->next != NULL) 
+            last_ptr = last_ptr->next;
+
+        // store outgoing CPU regs into the moved node
+        last_ptr->data.cpu = cpu_old;
+
+        printf("Switched to process ID: %d\n", head->data.p_Id);
+    }
+
     return 1;
 }
 
-// Move head node to back of the queue
-void next_process() 
+// Move head node to back of the queue without allocating/freeing nodes
+void next_process()
 {
-    appendNode(head->data);
-    deleteHead();
+    if (head == NULL || head->next == NULL) return; // zero or one node -> nothing to do
+
+    Node *old = head;
+    head = head->next;
+    old->next = NULL;
+
+    // append old head to tail
+    Node *last_ptr = head;
+    while (last_ptr->next != NULL) 
+        last_ptr = last_ptr->next;
+
+    last_ptr->next = old;
 }
 
 void new_process(int base, int size) 
@@ -56,7 +82,7 @@ void new_process(int base, int size)
 void appendNode(PCB_t new_data)
 {
     // 1. Allocate node
-    Node* new_node = malloc(sizeof(Node));
+    Node *new_node = malloc(sizeof(Node));
     if (!new_node) {
         perror("malloc");
         return;
@@ -76,6 +102,7 @@ void appendNode(PCB_t new_data)
     Node *last = head;
     while (last->next != NULL)
         last = last->next;
+
     last->next = new_node;
 }
 
