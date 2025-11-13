@@ -4,11 +4,11 @@
 #include "memory.h"
 #include "scheduler.h"
 
-char filename[64] = "program_list.txt";
-
 int main()
 {   
+    char filename[64] = "program_list.txt";
     int cycle_count = 1;
+    int ready_queue_status = 1;
 
     load_programs(filename);
 
@@ -18,10 +18,10 @@ int main()
 
     /* Loop till program exits 
     ** While ready_queue is not empty, keep looping */ 
-    while(head != NULL)
+    while(ready_queue_status != 0)
     {
         int p_status = clock_cycle();
-        schedule(cycle_count++, p_status);
+        ready_queue_status = schedule(cycle_count++, p_status);
     } 
 
     // Print first 20 memory locations

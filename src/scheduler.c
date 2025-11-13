@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "scheduler.h"
 #include "cpu.h"
 
@@ -9,6 +10,7 @@ const int TIME_QUANTUM = 10; // default to 10 clock cycles
 PCB_t process_table[PROCESS_TABLE_SIZE];
 int pt_index = 0;
 Node* head = NULL;
+bool initialized = false;
 
 int schedule(int cycle_num, int process_status)
 {
@@ -26,7 +28,7 @@ int schedule(int cycle_num, int process_status)
         printf("Loaded process ID: %d\n", head->data.p_Id);
     }
     // Switch when quantum expires (except when there is only 1 process in the queue)
-    else if (!(cycle_num % TIME_QUANTUM) && head->next != NULL) 
+    else if ((cycle_num % TIME_QUANTUM == 0) && head->next != NULL) 
     {
         next_process();
         CPU_reg_t cpu_old = context_switch(head->data.cpu); 
