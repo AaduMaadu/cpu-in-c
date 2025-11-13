@@ -5,14 +5,8 @@ The file structure follows very close to the project specifications. In the main
 
 #### To compile and run the program:
 
-A. Use the makefile:
+Use the makefile:
 ```
 make clean && make
 ./main
-```
-B. Run manually:
-```
-rm -f main
-gcc -g -Wall -o main main.c cpu.c disk.c memory.c
-./main.c
 ```

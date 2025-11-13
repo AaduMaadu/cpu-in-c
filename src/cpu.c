@@ -75,11 +75,11 @@ void execute_instruction()
         case 9:
             cpu.AC = cpu.AC * cpu.MBR;
             break;
-        case 10:
-            cpu.AC = cpu.AC & cpu.MBR;
+        case 10: // Logical AND
+            cpu.AC = cpu.AC && cpu.MBR;
             break;
-        case 11:
-            cpu.AC = cpu.AC | cpu.MBR;
+        case 11: // Logical OR
+            cpu.AC = cpu.AC || cpu.MBR;
             break;
         case 12:
             if (cpu.AC != 0) {

@@ -8,10 +8,6 @@
 Data data;
 int argExists = 0;
 
-void load_programs(char[] fname) {
-    
-}
-
 void load_prog(FILE *fname, int addr)
 {
     char buffer[256];

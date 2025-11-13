@@ -4,7 +4,7 @@
 #include "memory.h"
 
 FILE* file;
-char filename[64] = "program_if.txt";
+char filename[64] = "program_add.txt";
 char buffer[256];
 
 int main()
