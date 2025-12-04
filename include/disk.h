@@ -9,7 +9,7 @@ typedef struct {
 } Data;
 
 extern Data data;
-extern int argExists;
+/* `argExists` is internal to the parser implementation and should not be exposed here. */
 
 /* Fixed prototypes: use valid parameter syntax and terminate with semicolons */
 void load_programs(char[]);

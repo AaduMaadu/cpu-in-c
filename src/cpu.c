@@ -49,7 +49,7 @@ sleep = 13
 
 void execute_instruction()
 {
-    //printf("Executing opcode: %d\n", cpu.IR0);
+    printf("Executing opcode: %d\n", cpu.IR0);
     switch(cpu.IR0) {
         case 0:
             EXIT_FLAG = 1;
@@ -118,8 +118,10 @@ int clock_cycle()
     execute_instruction();
     cpu.PC = cpu.PC + 1;
 
-    if (EXIT_FLAG)
+    if (EXIT_FLAG) {
+        EXIT_FLAG = 0; // reset exit flag status
         return 0;
+    }
 
     return 1;
 }

@@ -11,6 +11,7 @@ int main()
     int ready_queue_status = 1;
 
     load_programs(filename);
+    //load_prog("loop50.txt", 19);
 
     // Load the first process into CPU before starting clock cycles
     cpu = head->data.cpu;

@@ -20,6 +20,8 @@ int schedule(int cycle_num, int process_status)
     // If the running process exited, remove it and load the next process
     if (process_status == 0) 
     {
+        printf("Process status: %d\n", process_status);
+        printf("Removing process ID: %d\n", head->data.p_Id);
         deleteHead();
         // Terminate if ready queue empty
         if (head == NULL) return 0;
