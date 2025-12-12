@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "scheduler.h"
 #include "cpu.h"
+#include "smm.h"
 
 #define PROCESS_TABLE_SIZE 1024
 
@@ -11,6 +12,41 @@ PCB_t process_table[PROCESS_TABLE_SIZE];
 int pt_index = 0;
 Node* head = NULL;
 bool initialized = false;
+
+void remove_process(int pid)
+{
+    Node *ptr = head;
+    Node *prev = NULL;
+
+    // If ready queue is empty
+    if (ptr == NULL) return;
+
+    // If head matches the pid
+    if (ptr->data.p_Id == pid)
+    {
+        deleteHead();
+        return;
+    }
+
+    // Search for process in ready queue
+    while (ptr->next != NULL)
+    {
+        prev = ptr;
+        ptr = ptr->next;
+
+        if (ptr->data.p_Id == pid)
+        {
+            // Delete process from ready queue
+            prev->next = ptr->next;
+            free(ptr);
+        }
+    }
+}
+
+int get_pid()
+{
+    return head->data.p_Id;
+}
 
 int schedule(int cycle_num, int process_status)
 {
@@ -77,6 +113,11 @@ void new_process(int base, int size)
     pcb_new.cpu.base = base;
     process_table[pt_index] = pcb_new;
     pt_index++;
+
+    if (is_allowed_address(pcb_new.p_Id, base))
+    {
+        
+    }
 
     /* Add process to the end of ready queue */
     appendNode(pcb_new);
