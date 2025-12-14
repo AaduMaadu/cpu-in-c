@@ -3,6 +3,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "scheduler.h"
+#include <unistd.h>
 
 // Define the CPU register
 CPU_reg_t cpu = {0};
@@ -19,7 +20,7 @@ CPU_reg_t context_switch(CPU_reg_t new_vals)
 
 void fetch_instruction(int addr)
 {
-    printf("Fetching from instruction addr %d\n", addr);
+    //printf("Fetching from instruction addr %d\n", addr);
     int *instruction_data = mem_read(addr);
 
     cpu.IR0 = instruction_data[0];
@@ -118,6 +119,8 @@ int clock_cycle()
     fetch_instruction(mem_address(cpu.PC));
     execute_instruction();
     cpu.PC = cpu.PC + 1;
+
+    //sleep(1);
 
     if (EXIT_FLAG) {
         EXIT_FLAG = false; // reset exit flag status

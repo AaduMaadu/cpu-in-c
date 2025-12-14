@@ -25,19 +25,37 @@ int allocate(int pid, int size)
     if (row == -1) return 0;
 
     HoleNode *ptr = head;
+    bool flag = false;
 
-    while (ptr->next != NULL && !(ptr->data.begAddr == base_addr))
+    if (head->next == NULL)
     {
+        flag = true;
+    }
+
+    while (ptr->next != NULL)
+    {
+        if (ptr->data.begAddr == base_addr)
+        {
+            flag = true;
+        }
         ptr = ptr->next;
     }
-    // If the entire hole is lost, then it should be removed from the linked list
-    if (ptr->data.holeSize - size == 0) 
+
+    if (flag)
     {
-        remove_hole(base_addr);
+        // If the entire hole is lost, then it should be removed from the linked list
+        if (ptr->data.holeSize - size == 0) 
+        {
+            remove_hole(base_addr);
+        }
+        else { // update the base address and size of the original hole to reflect the memory that has been lost
+            ptr->data.holeSize = ptr->data.holeSize - size;
+            ptr->data.begAddr = base_addr + size;
+        }
     }
-    else { // update the base address and size of the original hole to reflect the memory that has been lost
-        ptr->data.holeSize = ptr->data.holeSize - size;
-        ptr->data.begAddr = base_addr + size;
+    else {
+        printf("failed to match base addr during allocation\n");
+        return 0;
     }
 
     allocation_table[row][0] = pid;
@@ -79,6 +97,7 @@ void add_hole(int base, int size)
     {
         head = new_node;
         holeCount++;
+        printf("Added head for HoleList with base=%d, size=%d\n", base, size);
         return;
     }
 
@@ -237,10 +256,11 @@ int find_empty_row()
         {
             empty_row = true;
             row = i;
+            break;
         }
     }
     if (!empty_row) return -1;
-
+    printf("row num=%d\n", row);
     return row;
 }
 
@@ -249,6 +269,8 @@ int is_allowed_address(int pid, int addr)
     int size = get_size(pid);
     int base_addr = get_base_adddress(pid);
     int lastAddr = size + base_addr;
+
+    printf("size=%d, base_addr=%d, curAddr=%d\n", size, base_addr, addr);
 
     // Return 0 if out of bounds
     if (addr < base_addr || addr > lastAddr)
@@ -269,6 +291,11 @@ int get_size(int pid)
             break;
         }
     }
+    if (size == -1)
+    {
+        printf("failed to find valid size!\n");
+        return 0;
+    }
     return size;
 }
 
@@ -282,6 +309,10 @@ int get_row(int pid)
             row = i;
             break;
         }
+    }
+    if (row == -1)
+    {
+        printf("failed to find valid row!\n");
     }
     return row;
 }

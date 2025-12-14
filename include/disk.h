@@ -1,7 +1,7 @@
 #ifndef DISK_H
 #define DISK_H
 
-//#include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
     int opcode;
@@ -9,7 +9,8 @@ typedef struct {
 } Data;
 
 extern Data data;
-/* `argExists` is internal to the parser implementation and should not be exposed here. */
+extern bool process_loading;
+extern int p_count;
 
 /* Fixed prototypes: use valid parameter syntax and terminate with semicolons */
 void load_programs(char[]);

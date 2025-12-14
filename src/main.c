@@ -7,7 +7,7 @@
 
 int main()
 {   
-    char filename[64] = "program_list_valid.txt";
+    char filename[64] = "program_list_invalid_allocation.txt";
     int cycle_count = 1;
     int ready_queue_status = 1;
 
@@ -33,7 +33,8 @@ int main()
     //     printf("Memory location %d : [%d, %d]\n", i, memory_data[0], memory_data[1]);
     // }
 
-    printf("Hole count: %d", holeCount);
+    printf("Hole count: %d\n", holeCount);
+    bypass_validation = true;
     int *memory_data = mem_read(30);
     printf("Memory location %d : [%d, %d]\n", 30, memory_data[0], memory_data[1]);
     *memory_data = mem_read(150);

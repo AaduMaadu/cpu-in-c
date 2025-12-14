@@ -81,11 +81,13 @@ void new_process(int base, int size)
 
     /* Add process to the end of ready queue */
     appendNode(pcb_new);
+
+    //printf("New process added: pid=%d base=%d size=%d\n", pcb_new.p_Id, base, size);
 }
 
 void remove_process(int pid)
 {
-    printf("Removing process %d from ready queue...", pid);
+    printf("Removing process %d from ready queue...\n", pid);
 
     Node *ptr = head;
     Node *prev = NULL;
@@ -111,12 +113,15 @@ void remove_process(int pid)
             // Delete process from ready queue
             prev->next = ptr->next;
             free(ptr);
+            return;
         }
     }
 }
 
+// Get PID of currently running process
 int get_pid()
 {
+    if (head == NULL) return -1;
     return head->data.p_Id;
 }
 
@@ -151,6 +156,8 @@ void appendNode(PCB_t new_data)
         ptr = ptr->next;
     }
     ptr->next = new_node;
+
+    printf("Appended node\n");
 }
 
 void deleteHead()

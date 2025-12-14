@@ -5,11 +5,13 @@
 #include "disk.h"
 #include "scheduler.h"
 #include "smm.h"
+#include "cpu.h"
 
 // Define the global data structure
 Data data;
 int argExists = 0;
 int p_count = 0;
+bool process_loading = false;
 
 void load_programs(char fname[])
 {
@@ -27,6 +29,7 @@ void load_programs(char fname[])
         exit(1);
     }
     printf("Successfully opened file %s\n", fname);
+    process_loading = true;
 
     while (fgets(buffer, sizeof(buffer), file) != NULL) 
     {
@@ -38,7 +41,7 @@ void load_programs(char fname[])
 
         // Extract memory position of program
         int i = 0;
-        while (*ptr != ' ' && *ptr != '\r' && *ptr != '\n' && *ptr != '\0') 
+            while (*ptr != ' ' && *ptr != '\r' && *ptr != '\n' && *ptr != '\0' && i < (int)sizeof(memSize_str) - 1)
         {
             memSize_str[i++] = *ptr++;
         }
@@ -49,7 +52,7 @@ void load_programs(char fname[])
 
         // Extract program file name (trim CR/LF)
         i = 0;
-        while (*ptr != '\n' && *ptr != '\r' && *ptr != '\0' && i < 31)
+            while (*ptr != '\n' && *ptr != '\r' && *ptr != '\0' && i < (int)sizeof(filename) - 1)
         {
             filename[i++] = *ptr++;
         }
@@ -57,13 +60,15 @@ void load_programs(char fname[])
 
         if (allocate(p_count, memSize))
         {
+            printf("SMM allocated pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
             load_prog(filename, memSize);
             p_count++;
         }
         else {
-            printf("Process %d rejected by SMM!", p_count);
+            printf("Process %d rejected by SMM!\n", p_count);
         }
     }
+    process_loading = false;
     fclose(file);
 }
 
@@ -72,6 +77,7 @@ void load_prog(char fname[], int memSize)
     char buffer[64];
     int p_size = 0; // Holds the memory size of the actual isntructions of a process
     int base_addr = get_base_adddress(p_count);
+    int addr = base_addr;
 
     FILE* file = fopen(fname, "r");
     if (file == NULL) 
@@ -80,7 +86,6 @@ void load_prog(char fname[], int memSize)
         exit(1);
     }
     printf("Successfully opened file %s\n", fname);
-
     // Add process to scheduler ready queue
     new_process(base_addr, memSize); 
 
@@ -90,7 +95,11 @@ void load_prog(char fname[], int memSize)
         if (buffer[0] == '/')
             continue;
 
-        mem_write(base_addr++, translate(buffer));
+        if (!EXIT_FLAG) 
+        {
+            mem_write(addr, translate(buffer));
+            addr++;
+        }
         p_size++;
     }
     
@@ -107,8 +116,8 @@ Data* translate(char *instruction)
     memset(arg, 0, sizeof(arg));
 
     int i = 0;
-    // Copy opcode until space, newline, or end
-    while (*ptr != ' ' && *ptr != '\0' && *ptr != '\n' && i < 31) 
+    // Copy opcode until space, CR, LF, or end
+    while (*ptr != ' ' && *ptr != '\0' && *ptr != '\n' && *ptr != '\r' && i < 31) 
     {
         opcode[i++] = *ptr++;
     }
@@ -119,7 +128,7 @@ Data* translate(char *instruction)
     {
         ptr++; //skip space
         i = 0;
-        while (*ptr != '\0' && *ptr != '\n' && i < 31) 
+        while (*ptr != '\0' && *ptr != '\n' && *ptr != '\r' && i < 31) 
         {
             arg[i++] = *ptr++;
         }
@@ -133,7 +142,7 @@ Data* translate(char *instruction)
         data.arg = 0;
     }
 
-    //printf("Parsing: opcode='%s', arg='%s'\n", opcode, arg);
+    // printf("Parsing: opcode=%s, arg=%s\n", opcode, arg);
 
     if (strcmp(opcode, "exit") == 0) {
         data.opcode = 0;
