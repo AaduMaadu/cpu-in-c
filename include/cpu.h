@@ -1,6 +1,8 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <stdbool.h>
+
 typedef struct {
     int base;
     int PC;
@@ -13,6 +15,7 @@ typedef struct {
 
 extern CPU_reg_t cpu;
 extern int cycle_count;
+extern bool EXIT_FLAG;
 
 CPU_reg_t context_switch(CPU_reg_t);
 void fetch_instruction(int);

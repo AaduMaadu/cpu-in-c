@@ -12,15 +12,16 @@ typedef struct HoleNode {
     struct HoleNode *next;
 } HoleNode;
 
+extern int holeCount;
+
 int allocate(int pid, int size);
 void deallocate(int pid);
 void add_hole(int base, int size);
 void remove_hole(int base);
-void merge_holes();
+void merge_holes(void);
 int find_hole(int size);
 int get_base_adddress(int pid);
-int find_empty_row();
+int find_empty_row(void);
 int is_allowed_address(int pid, int addr);
-
 
 #endif // smm.h

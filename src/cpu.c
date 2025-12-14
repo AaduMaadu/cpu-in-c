@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "cpu.h"
 #include "memory.h"
 #include "scheduler.h"
 
 // Define the CPU register
 CPU_reg_t cpu = {0};
-__uint8_t EXIT_FLAG = 0;
+bool EXIT_FLAG = false;
 
 // Swap old cpu register values with new cpu register values
 CPU_reg_t context_switch(CPU_reg_t new_vals) 
@@ -52,7 +53,7 @@ void execute_instruction()
     printf("Executing opcode: %d\n", cpu.IR0);
     switch(cpu.IR0) {
         case 0:
-            EXIT_FLAG = 1;
+            EXIT_FLAG = true;
             break;
         case 1:
             cpu.AC = cpu.IR1;
@@ -119,7 +120,7 @@ int clock_cycle()
     cpu.PC = cpu.PC + 1;
 
     if (EXIT_FLAG) {
-        EXIT_FLAG = 0; // reset exit flag status
+        EXIT_FLAG = false; // reset exit flag status
         return 0;
     }
 

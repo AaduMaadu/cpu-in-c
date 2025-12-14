@@ -9,12 +9,12 @@
 // Define the global data structure
 Data data;
 int argExists = 0;
+int p_count = 0;
 
 void load_programs(char fname[])
 {
     char buffer[64];
     char memSize_str[16], filename[64];
-    int pid = 0;
     
     // Initialize arrays
     memset(memSize_str, 0, sizeof(memSize_str));
@@ -32,48 +32,57 @@ void load_programs(char fname[])
     {
         char *ptr = buffer;
 
+        /* Reset temporary buffers for each line to avoid leftover characters */
+        memset(memSize_str, 0, sizeof(memSize_str));
+        memset(filename, 0, sizeof(filename));
+
         // Extract memory position of program
         int i = 0;
-        while (*ptr != ' ') 
+        while (*ptr != ' ' && *ptr != '\r' && *ptr != '\n' && *ptr != '\0') 
         {
             memSize_str[i++] = *ptr++;
         }
         int memSize = atoi(memSize_str);
 
-        // Extract program file name
-        ptr++; // skip space
+        // Skip spaces between size and filename
+        while (*ptr == ' ') ptr++;
+
+        // Extract program file name (trim CR/LF)
         i = 0;
-        while (*ptr != '\n' && *ptr != '\0' && i < 31)
+        while (*ptr != '\n' && *ptr != '\r' && *ptr != '\0' && i < 31)
         {
             filename[i++] = *ptr++;
         }
         filename[i] = '\0';
 
-        if(allocate(pid, memSize))
+        if (allocate(p_count, memSize))
         {
             load_prog(filename, memSize);
+            p_count++;
         }
-        else{
-            printf("Process %d rejected by SMM!", pid);
+        else {
+            printf("Process %d rejected by SMM!", p_count);
         }
-        pid++;
     }
     fclose(file);
 }
 
-void load_prog(char fname[], int addr)
+void load_prog(char fname[], int memSize)
 {
-    int base = addr;
     char buffer[64];
-    int size = 0;
+    int p_size = 0; // Holds the memory size of the actual isntructions of a process
+    int base_addr = get_base_adddress(p_count);
 
     FILE* file = fopen(fname, "r");
     if (file == NULL) 
     {
-        printf("Cannot open file '%s'\n", fname);
+        printf("Cannot open file %s\n", fname);
         exit(1);
     }
     printf("Successfully opened file %s\n", fname);
+
+    // Add process to scheduler ready queue
+    new_process(base_addr, memSize); 
 
     while (fgets(buffer, sizeof(buffer), file) != NULL) 
     {
@@ -81,10 +90,10 @@ void load_prog(char fname[], int addr)
         if (buffer[0] == '/')
             continue;
 
-        mem_write(addr++, translate(buffer));
-        size++;
+        mem_write(base_addr++, translate(buffer));
+        p_size++;
     }
-    new_process(base, size);
+    
     fclose(file);
 }
 

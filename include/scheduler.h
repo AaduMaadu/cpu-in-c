@@ -15,12 +15,13 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-/* Global ready-queue head pointer */
-extern Node *head;
+extern Node *head; /* Global ready-queue head pointer */
 
 int schedule(int cycle_num, int process_status);
 void next_process(void);
 void new_process(int base, int size);
+int get_pid(void);
+void remove_process(int pid);
 
 /* Linked-list helpers */
 void appendNode(PCB_t new_data);

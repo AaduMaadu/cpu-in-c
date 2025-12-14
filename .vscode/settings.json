@@ -62,5 +62,12 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "makefile.launchConfigurations": [
+    {
+      "cwd": "/home/aadesh/CE4348/Project/cpu-in-c",
+      "binaryPath": "/home/aadesh/CE4348/Project/cpu-in-c/main",
+      "binaryArgs": []
+    }
+  ]
 }

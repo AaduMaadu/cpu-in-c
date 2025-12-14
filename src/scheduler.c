@@ -13,41 +13,6 @@ int pt_index = 0;
 Node* head = NULL;
 bool initialized = false;
 
-void remove_process(int pid)
-{
-    Node *ptr = head;
-    Node *prev = NULL;
-
-    // If ready queue is empty
-    if (ptr == NULL) return;
-
-    // If head matches the pid
-    if (ptr->data.p_Id == pid)
-    {
-        deleteHead();
-        return;
-    }
-
-    // Search for process in ready queue
-    while (ptr->next != NULL)
-    {
-        prev = ptr;
-        ptr = ptr->next;
-
-        if (ptr->data.p_Id == pid)
-        {
-            // Delete process from ready queue
-            prev->next = ptr->next;
-            free(ptr);
-        }
-    }
-}
-
-int get_pid()
-{
-    return head->data.p_Id;
-}
-
 int schedule(int cycle_num, int process_status)
 {
     // ready queue is empty, nothing to schedule
@@ -118,6 +83,43 @@ void new_process(int base, int size)
     appendNode(pcb_new);
 }
 
+void remove_process(int pid)
+{
+    printf("Removing process %d from ready queue...", pid);
+
+    Node *ptr = head;
+    Node *prev = NULL;
+
+    // If ready queue is empty
+    if (ptr == NULL) return;
+
+    // If head matches the pid
+    if (ptr->data.p_Id == pid)
+    {
+        deleteHead();
+        return;
+    }
+
+    // Search for process in ready queue
+    while (ptr->next != NULL)
+    {
+        prev = ptr;
+        ptr = ptr->next;
+
+        if (ptr->data.p_Id == pid)
+        {
+            // Delete process from ready queue
+            prev->next = ptr->next;
+            free(ptr);
+        }
+    }
+}
+
+int get_pid()
+{
+    return head->data.p_Id;
+}
+
 // Given a reference (pointer to pointer) to 
 // the head of a list and an int, appends a 
 // new node at the end  
@@ -143,12 +145,12 @@ void appendNode(PCB_t new_data)
     }
 
     // Otherwise append new node to tail
-    Node *last_ptr = head;
-    while (last_ptr->next != NULL) 
+    Node *ptr = head;
+    while (ptr->next != NULL) 
     {
-        last_ptr = last_ptr->next;
+        ptr = ptr->next;
     }
-    last_ptr->next = new_node;
+    ptr->next = new_node;
 }
 
 void deleteHead()
