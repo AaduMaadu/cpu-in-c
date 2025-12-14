@@ -64,7 +64,7 @@ void load_programs(char fname[])
             load_prog(filename, memSize);
         }
         else {
-            printf("Error: SMM rejected process pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
+            fprintf(stderr, "Error: SMM rejected process pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
         }
         p_count++;
     }

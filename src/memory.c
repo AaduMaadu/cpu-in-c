@@ -17,7 +17,7 @@ int* mem_read(int addr)
         // Check if read address is valid
         if (!is_allowed_address(pid, addr))
         {
-            printf("Error: Process %d has an Illegal Memory Read Operation at addr %d\n", pid, addr);
+            fprintf(stderr, "Error: Process %d has an Illegal Memory Read Operation at addr %d\n", pid, addr);
             remove_process(pid); // Remove process from scheduler ready queue
             EXIT_FLAG = true; // Set exit flag to terminate process execution in CPU
             return;
@@ -44,7 +44,7 @@ void mem_write(int addr, Data *data_ptr)
     // Check if write address is valid 
     if (!is_allowed_address(pid, addr)) 
     {
-        printf("Error: Process %d has an Illegal Write Operation at addr %d\n", pid, addr);
+        fprintf(stderr, "Error: Process %d has an Illegal Memory Write Operation at addr %d\n", pid, addr);
         remove_process(pid); // Remove process from scheduler ready queue
         EXIT_FLAG = true; // Set exit flag to terminate process execution in CPU
         return;

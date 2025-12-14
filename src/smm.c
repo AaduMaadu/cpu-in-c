@@ -9,8 +9,6 @@ int holeCount = 0;
 int allocation_table[ALLOCATION_TABLE_SIZE][3];
 /* ALTERNATE OPTION: Create fake head in order to attach subsequent hole nodes in the linked list */
 static HoleNode *head = NULL; 
-// head->data.begAddr = -1;
-// head->data.holeSize = -1;
 
 
 //  allocation table stores the PID, the base address, and the size of the process
