@@ -2,8 +2,8 @@
 #define SMM_H
 
 typedef struct {
-    int beg_addr;
-    int hole_size;
+    int begAddr;
+    int holeSize;
 } HoleList_t;
 
 // Memory hole node

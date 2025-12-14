@@ -4,6 +4,7 @@
 #include "memory.h"
 #include "disk.h"
 #include "scheduler.h"
+#include "smm.h"
 
 // Define the global data structure
 Data data;
@@ -12,10 +13,11 @@ int argExists = 0;
 void load_programs(char fname[])
 {
     char buffer[64];
-    char memPos_str[16], filename[64];
+    char memSize_str[16], filename[64];
+    int pid = 0;
     
     // Initialize arrays
-    memset(memPos_str, 0, sizeof(memPos_str));
+    memset(memSize_str, 0, sizeof(memSize_str));
     memset(filename, 0, sizeof(filename));
 
     FILE* file = fopen(fname, "r");
@@ -34,9 +36,9 @@ void load_programs(char fname[])
         int i = 0;
         while (*ptr != ' ') 
         {
-            memPos_str[i++] = *ptr++;
+            memSize_str[i++] = *ptr++;
         }
-        int memPos = atoi(memPos_str);
+        int memSize = atoi(memSize_str);
 
         // Extract program file name
         ptr++; // skip space
@@ -47,7 +49,14 @@ void load_programs(char fname[])
         }
         filename[i] = '\0';
 
-        load_prog(filename, memPos);
+        if(allocate(pid, memSize))
+        {
+            load_prog(filename, memSize);
+        }
+        else{
+            printf("Process %d rejected by SMM!", pid);
+        }
+        pid++;
     }
     fclose(file);
 }

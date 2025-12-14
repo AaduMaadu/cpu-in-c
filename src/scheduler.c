@@ -114,11 +114,6 @@ void new_process(int base, int size)
     process_table[pt_index] = pcb_new;
     pt_index++;
 
-    if (is_allowed_address(pcb_new.p_Id, base))
-    {
-        
-    }
-
     /* Add process to the end of ready queue */
     appendNode(pcb_new);
 }

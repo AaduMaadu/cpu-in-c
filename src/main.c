@@ -3,6 +3,7 @@
 #include "disk.h"
 #include "memory.h"
 #include "scheduler.h"
+#include "smm.h"
 
 int main()
 {   
@@ -10,6 +11,7 @@ int main()
     int cycle_count = 1;
     int ready_queue_status = 1;
 
+    add_hole(0, 1024);
     load_programs(filename);
     //load_prog("loop50.txt", 19);
 
