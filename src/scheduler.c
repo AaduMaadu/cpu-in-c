@@ -23,7 +23,7 @@ int schedule(int cycle_num, int process_status)
     {
         printf("Process status: %d\n", process_status);
         printf("Removing process ID: %d\n", head->data.p_Id);
-        deleteHead();
+        remove_process(head->data.p_Id);
         // Terminate if ready queue empty
         if (head == NULL) return 0;
 
@@ -88,6 +88,7 @@ void new_process(int base, int size)
 void remove_process(int pid)
 {
     printf("Removing process %d from ready queue...\n", pid);
+    deallocate(pid);
 
     Node *ptr = head;
     Node *prev = NULL;

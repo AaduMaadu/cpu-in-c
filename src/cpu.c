@@ -51,7 +51,7 @@ sleep = 13
 
 void execute_instruction()
 {
-    printf("Executing opcode: %d\n", cpu.IR0);
+    //printf("Executing opcode: %d\n", cpu.IR0);
     switch(cpu.IR0) {
         case 0:
             EXIT_FLAG = true;

@@ -60,13 +60,13 @@ void load_programs(char fname[])
 
         if (allocate(p_count, memSize))
         {
-            printf("SMM allocated pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
+            printf("SMM allocated process pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
             load_prog(filename, memSize);
-            p_count++;
         }
         else {
-            printf("Process %d rejected by SMM!\n", p_count);
+            printf("Error: SMM rejected process pid=%d base=%d size=%d\n", p_count, get_base_adddress(p_count), memSize);
         }
+        p_count++;
     }
     process_loading = false;
     fclose(file);

@@ -11,14 +11,17 @@ bool bypass_validation = false;
 
 int* mem_read(int addr)
 {
-    int pid = get_pid();
-    // Check if read address is valid
-    if (!is_allowed_address(pid, addr) && !bypass_validation) 
+    if (!bypass_validation)
     {
-        printf("Error: Process %d has an Illegal Memory Read Operation at addr %d\n", pid, addr);
-        remove_process(pid); // Remove process from scheduler ready queue
-        EXIT_FLAG = true; // Set exit flag to terminate process execution in CPU
-        return;
+        int pid = get_pid();
+        // Check if read address is valid
+        if (!is_allowed_address(pid, addr))
+        {
+            printf("Error: Process %d has an Illegal Memory Read Operation at addr %d\n", pid, addr);
+            remove_process(pid); // Remove process from scheduler ready queue
+            EXIT_FLAG = true; // Set exit flag to terminate process execution in CPU
+            return;
+        }
     }
     return memory[addr];
 }

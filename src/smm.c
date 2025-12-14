@@ -67,6 +67,7 @@ int allocate(int pid, int size)
 
 void deallocate(int pid)
 {
+    printf("Deallocating process %d memory...\n", pid);
     int base_addr = get_base_adddress(pid);
     int size = get_size(pid);
 
@@ -113,11 +114,13 @@ void add_hole(int base, int size)
         {
             cur_ptr->data.begAddr = base;
             free(new_node);
+            printf("Expanded hole with base=%d, size=%d\n", base, size);
         }
         else { // Otheriwse append new hole to head
             new_node->next = head;
             head = new_node;
             holeCount++;
+            printf("Added hole with base=%d, size=%d\n", base, size);
         }
         return;   
     }
@@ -133,6 +136,7 @@ void add_hole(int base, int size)
             new_node->next = cur_ptr;
             prev_ptr->next = new_node;
             holeCount++;
+            printf("Inserted hole with base=%d, size=%d\n", base, size);
 
             // Check for adjacent holes to be merged
             merge_holes();
@@ -156,6 +160,7 @@ void remove_hole(int base)
         head = head->next; // Changed head
         free(temp_ptr);
         holeCount--;
+        printf("Removed hole with base=%d\n", base);
         return;
     }
 
@@ -171,6 +176,7 @@ void remove_hole(int base)
             prev->next = temp_ptr->next;
             free(temp_ptr);
             holeCount--;
+            printf("Removed hole with base=%d\n", base);
             return;
         }
     }
@@ -183,8 +189,8 @@ void merge_holes()
 
     while (cur_ptr->next != NULL)
     {
-        cur_ptr = cur_ptr->next;
         prev_ptr = cur_ptr;
+        cur_ptr = cur_ptr->next;
         int lastAddr = prev_ptr->data.begAddr + prev_ptr->data.holeSize;
 
         // If two holes are next to each other, merge into one
@@ -194,6 +200,7 @@ void merge_holes()
             prev_ptr->next = cur_ptr->next;
             free(cur_ptr);
             holeCount--;
+            printf("Merged hole with lastAddr=%d\n", lastAddr);
             return;
         }
     }
@@ -270,7 +277,7 @@ int is_allowed_address(int pid, int addr)
     int base_addr = get_base_adddress(pid);
     int lastAddr = size + base_addr;
 
-    printf("size=%d, base_addr=%d, curAddr=%d\n", size, base_addr, addr);
+    //printf("size=%d, base_addr=%d, curAddr=%d\n", size, base_addr, addr);
 
     // Return 0 if out of bounds
     if (addr < base_addr || addr > lastAddr)
@@ -294,7 +301,6 @@ int get_size(int pid)
     if (size == -1)
     {
         printf("failed to find valid size!\n");
-        return 0;
     }
     return size;
 }

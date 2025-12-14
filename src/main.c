@@ -7,9 +7,10 @@
 
 int main()
 {   
-    char filename[64] = "program_list_invalid_allocation.txt";
+    char filename[64] = "program_list_invalid_access.txt";
     int cycle_count = 1;
     int ready_queue_status = 1;
+    int *memory_data = NULL;
 
     add_hole(0, 1024); // Add hole by default to entire main memory size
     load_programs(filename);
@@ -35,11 +36,14 @@ int main()
 
     printf("Hole count: %d\n", holeCount);
     bypass_validation = true;
-    int *memory_data = mem_read(30);
+    
+    memory_data = mem_read(30);
     printf("Memory location %d : [%d, %d]\n", 30, memory_data[0], memory_data[1]);
-    *memory_data = mem_read(150);
+
+    memory_data = mem_read(150);
     printf("Memory location %d : [%d, %d]\n", 150, memory_data[0], memory_data[1]);
-    *memory_data = mem_read(230);
+
+    memory_data = mem_read(230);
     printf("Memory location %d : [%d, %d]\n", 230, memory_data[0], memory_data[1]);
 
     return 0;
