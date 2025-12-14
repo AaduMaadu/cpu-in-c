@@ -79,7 +79,7 @@ void deallocate(int pid)
 
 void add_hole(int base, int size)
 {
-    int lastAddr = base + size;
+    int lastAddr = base + size - 1;
     HoleNode *new_node = malloc(sizeof(HoleNode));
     if (!new_node) 
     {
@@ -102,7 +102,6 @@ void add_hole(int base, int size)
 
     HoleNode *cur_ptr = head;
     HoleNode *prev_ptr = NULL;
-
     // If only head present (single hole)
     if (cur_ptr->next == NULL)
     {
@@ -120,13 +119,15 @@ void add_hole(int base, int size)
             holeCount++;
             printf("Added hole with base=%d, size=%d\n", base, size);
         }
+        merge_holes(); // Check for adjacent holes to be merged
         return;   
-    }
+    } 
 
     while (cur_ptr->next != NULL) 
     {
         prev_ptr = cur_ptr;
         cur_ptr = cur_ptr->next;
+        // printf("base=%d, size=%d, prev base=%d, cur base=%d, last addr=%d\n", base, size, prev_ptr->data.begAddr, cur_ptr->data.begAddr, lastAddr);
         
         // Insert new hole between two holes
         if ((base > prev_ptr->data.begAddr) && (lastAddr < cur_ptr->data.begAddr))
@@ -136,8 +137,7 @@ void add_hole(int base, int size)
             holeCount++;
             printf("Inserted hole with base=%d, size=%d\n", base, size);
 
-            // Check for adjacent holes to be merged
-            merge_holes();
+            merge_holes(); // Check for adjacent holes to be merged
             return;
         }
     }
@@ -189,10 +189,11 @@ void merge_holes()
     {
         prev_ptr = cur_ptr;
         cur_ptr = cur_ptr->next;
-        int lastAddr = prev_ptr->data.begAddr + prev_ptr->data.holeSize;
+        int lastAddr = prev_ptr->data.begAddr + prev_ptr->data.holeSize - 1;
 
         // If two holes are next to each other, merge into one
-        if (((lastAddr + 1) == cur_ptr->data.begAddr) || (lastAddr == cur_ptr->data.begAddr) || (lastAddr == (cur_ptr->data.begAddr - 1)))
+        //if (((lastAddr + 1) == cur_ptr->data.begAddr) || (lastAddr == cur_ptr->data.begAddr) || (lastAddr == (cur_ptr->data.begAddr - 1)))
+        if (cur_ptr->data.begAddr == (lastAddr+1))
         {
             prev_ptr->data.holeSize = prev_ptr->data.holeSize + cur_ptr->data.holeSize;
             prev_ptr->next = cur_ptr->next;

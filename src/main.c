@@ -7,7 +7,9 @@
 
 int main()
 {   
-    char filename[64] = "program_list_invalid_access.txt";
+    char filename[64] = "program_list_valid.txt";
+    // char filename[64] = "program_list_invalid_allocation.txt";
+    // char filename[64] = "program_list_invalid_access.txt";
     int cycle_count = 1;
     int ready_queue_status = 1;
     int *memory_data = NULL;
